@@ -2042,7 +2042,7 @@ body {
         // non serve più un poll di base così frequente per coprire i freeze —
         // 8s riduce il carico su DB/rete per tutto il team senza perdere
         // reattività percepita (il caso critico è comunque coperto al volo).
-        setInterval(_pollFallback, 8000); // era 5000 (prima ancora 15000)
+        setInterval(_pollFallback, 1000); // era 8000 (prima ancora 5000, poi 15000) — abbassato con la migrazione a Cloudflare D1
         document.addEventListener('visibilitychange', function() {
           if (document.visibilityState === 'visible') setTimeout(_pollFallback, 500);
         });
@@ -2149,7 +2149,7 @@ body {
       // FIX v40: portato da 4s a 9s (sfalsato rispetto agli 8s di
       // _pollFallback per non sovrapporsi) — stesso motivo: il risveglio
       // attivo copre già il recupero rapido dopo un freeze.
-      setTimeout(function() { _poll4s(); setInterval(_poll4s, 9000); }, 5000);
+      setTimeout(function() { _poll4s(); setInterval(_poll4s, 1000); }, 5000); // era 9000 — abbassato con la migrazione a Cloudflare D1
       window._poll4s = _poll4s;
 
       // ── 2) firebase.firestore: aggiunge postgres_changes su holter_counts ─
