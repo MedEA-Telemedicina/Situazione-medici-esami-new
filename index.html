@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html data-theme="alfred-light">
   <head>
@@ -466,8 +467,18 @@ body {
       return '/kv';
     }
     function _cfParseRow(row) {
-      if (row && typeof row.data === 'string') {
+      if (!row) return row;
+      if (typeof row.data === 'string') {
         try { row.data = JSON.parse(row.data); } catch(e) {}
+      }
+      // Colonne specifiche di holter_counts: sono testo JSON in D1,
+      // ma il codice si aspetta oggetti/array già pronti (come faceva jsonb su Postgres).
+      var _holterCols = ['hc', 'hp', 'spiro', 'pls', 'notes', 'ecg_times', 'extra_hc', 'extra_hp', 'extra_sp', 'extra_pl', 'disp_overrides'];
+      for (var i = 0; i < _holterCols.length; i++) {
+        var col = _holterCols[i];
+        if (typeof row[col] === 'string') {
+          try { row[col] = JSON.parse(row[col]); } catch(e) {}
+        }
       }
       return row;
     }
